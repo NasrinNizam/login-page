@@ -5,13 +5,13 @@
     @apply flex md:justify-around justify-center items-center
 }
 .lotti{
-    @apply w-[400px] hidden md:block
+    @apply lg:w-[400px] md:w-[300px] hidden md:block
 }
 .heading{
     @apply text-lg font-semibold
 }
 form{
-    @apply w-[300px] md:w-[400px]
+    @apply w-[300px] md:w-[350px] lg:w-[400px] bg-[#00897B] bg-opacity-20 p-5 rounded-lg
 }
 form h2{
     @apply text-2xl text-center font-bold mb-5
@@ -23,7 +23,7 @@ form input{
     @apply mb-5
 }
 form button{
-    @apply w-full mt-5 bg-[#00897B] py-[6px]  text-[18px] rounded-md text-white font-semibold
+    @apply w-full mt-5 bg-[#00897B] active:scale-95 transition-all py-[6px]  text-[18px] rounded-md text-white font-semibold
 }
 form h5{
     @apply text-[14px] md:text-[18px] mt-5 font-medium text-center
@@ -35,5 +35,8 @@ form span{
     @apply relative
 }
 .icon{
-    @apply absolute top-[50%] translate-y-[-50%] right-1
+    @apply absolute top-[50%] translate-y-[-50%] right-2
+}
+.err{
+    @apply text-sm text-red-500
 }

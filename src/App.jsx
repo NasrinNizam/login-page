@@ -2,6 +2,7 @@ import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } 
 import './App.css'
 import { LoginPage } from './pages/LoginPage'
 import { RegisterPage } from './pages/RegisterPage'
+import { ToastContainer } from 'react-toastify'
 
 function App() {
   const route = createBrowserRouter(
@@ -15,6 +16,7 @@ function App() {
   return (
     <>
       <RouterProvider router={route}/>
+      <ToastContainer />
     </>
   )
 }
