@@ -7,14 +7,14 @@ function App() {
   const route = createBrowserRouter(
     createRoutesFromElements(
       <Route>
-        <Route path='/login' element={<LoginPage/>}/>
+        <Route path='/' element={<LoginPage/>}/>
         <Route path='/register' element={<RegisterPage/>}/>
       </Route>
     )
   )
   return (
     <>
-      <RouterProvider router={Route}/>
+      <RouterProvider router={route}/>
     </>
   )
 }
