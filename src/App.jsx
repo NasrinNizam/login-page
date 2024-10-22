@@ -3,6 +3,8 @@ import './App.css'
 import { LoginPage } from './pages/LoginPage'
 import { RegisterPage } from './pages/RegisterPage'
 import { ToastContainer } from 'react-toastify'
+import database from './firebase.config'
+import app from './firebase.config'
 
 function App() {
   const route = createBrowserRouter(

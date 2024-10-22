@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
-import login from "../assets/login.json";
+import login from "../../assets/login.json";
 import Lottie from "lottie-react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import './login/login.css'
+import './login.css'
 import { Link, useNavigate } from 'react-router-dom';
 import { Bounce, ToastContainer, toast } from 'react-toastify';
-  import 'react-toastify/dist/ReactToastify.css';
+import 'react-toastify/dist/ReactToastify.css';
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+
 
 export const Login = () => {
     // ====== react states =====
@@ -15,6 +17,9 @@ export const Login = () => {
     const [emailError, setEmailError] = useState('');
     const [passwordError, setPasswordError] = useState('');
     const navigate = useNavigate();
+
+    // ==== firebase variables =====
+     const auth = getAuth();
 
     // ====== functions =====
     const handleEamil=(e)=>{
@@ -34,6 +39,23 @@ export const Login = () => {
             setPasswordError('Please enter password')
         }
        else{
+        signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          const user = userCredential.user;
+          if(user.emailVerified == false){
+            // ===== varify email toast massage 
+            toast.error('Varify your email!', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+                transition: Bounce,
+                });
+          }else{
         navigate('/')
         toast.success('login successful!', {
             position: "top-left",
@@ -46,6 +68,24 @@ export const Login = () => {
             theme: "dark",
             transition: Bounce,
             });
+          }
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+           // ===== wrong email toast massage 
+        toast.error('Wrong email or Password', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+        });
+        });
        }
     }
     
@@ -58,10 +98,10 @@ export const Login = () => {
                 </div>
                 <form onSubmit={handleSubmit}>
                     <h2>Welcome Back!</h2>
-                    <lebel className='heading'>Email:</lebel><br/>
+                    <label className='heading'>Email:</label><br/>
                     <input onChange={handleEamil} type="email" placeholder='Your Email' />
                     <p  className='err email'>{emailError} </p>
-                    <lebel className='heading'>Password:</lebel><br/>
+                    <label className='heading'>Password:</label><br/>
                     <div className="passDiv">
                         {
                             showPassword?

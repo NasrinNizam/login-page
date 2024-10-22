@@ -5,7 +5,9 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import '../register/register.css'
 import { Link, useNavigate } from 'react-router-dom';
 import { Bounce, ToastContainer, toast } from 'react-toastify';
-  import 'react-toastify/dist/ReactToastify.css';
+import 'react-toastify/dist/ReactToastify.css';
+import { getAuth, createUserWithEmailAndPassword, updateProfile, sendEmailVerification  } from "firebase/auth";
+
 
 export const Register = () => {
     // ====== react states =====
@@ -20,6 +22,10 @@ export const Register = () => {
     const [passwordError, setPasswordError] = useState('');
     const [confirmPasswordError, setConfirmPasswordError] = useState('');
     const navigate = useNavigate();
+
+    // ===== firebase variables =====
+     const auth = getAuth();
+
 
     // ====== functions =====
     const handleName=(e)=>{
@@ -52,22 +58,70 @@ export const Register = () => {
         else if(!confirmPassword){
             setConfirmPasswordError('Please enter confirm password')
         }
-        else if(password !== confirmPassword) {
-           setConfirmPasswordError('Passwords do not match')
-        }
        else{
-        navigate('/')
-        toast.error('Verify your Email!', {
-            position: "top-left",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "dark",
-            transition: Bounce,
+        if(password !== confirmPassword) {
+            setConfirmPasswordError('Passwords do not match')
+         }else{
+            // ==== firebase code======
+            createUserWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => { 
+              const user = userCredential.user;
+              //   === update profile===
+              updateProfile(auth.currentUser, {
+                displayName: name,
+                photoURL: "https://static.vecteezy.com/system/resources/thumbnails/002/318/271/small/user-profile-icon-free-vector.jpg"
+              })
+              //   ======= navigate to login =======
+            console.log(user)
+            navigate('/')
+            // ========= toastify =========
+            toast.error('Verify your Email!', {
+                position: "top-left",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+                transition: Bounce,
+                });
+                // ==== email verification
+                sendEmailVerification(auth.currentUser)
+            })
+            .catch((error) => {
+              const errorCode = error.code;
+              const errorMessage = error.message;
+          // ====== password condition
+            if(errorCode == 'auth/weak-password'){
+                toast.error('weak password!', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                    transition: Bounce,
+                    });
+            }
+           // ======= email condition
+           if(errorCode == 'auth/email-already-in-use'){
+               toast.error('this email already exist!', {
+                   position: "top-right",
+                   autoClose: 5000,
+                    hideProgressBar: false,
+                   closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                   transition: Bounce,
+                   });
+            }
             });
+         }
        }
     }
     
@@ -81,14 +135,14 @@ export const Register = () => {
                 <form className='form2' onSubmit={handleSubmit}>
                     <h2>Registration</h2>
                     {/* ===== Name ====== */}
-                    <lebel className='headings'>Full Name:</lebel><br/>
-                    <input onChange={handleName} type="email" placeholder='Your Email' />
+                    <label className='headings'>Full Name:</label><br/>
+                    <input onChange={handleName} type="text" placeholder='Your Email' />
                     <p className='err email'>{nameError} </p>
                     {/* ===== email ===== */}
-                    <lebel className='headings'>Email:</lebel><br/>
+                    <label className='headings'>Email:</label><br/>
                     <input onChange={handleEamil} type="email" placeholder='Your Email' />
                     <p className='err email'>{emailError} </p>
-                    <lebel className='headings'>Password:</lebel><br/>
+                    <label className='headings'>Password:</label><br/>
                     {/* ===== password ===== */}
                     <div className="passDivOne">
                         {
@@ -101,7 +155,7 @@ export const Register = () => {
                     </div>
                     <p className='err'>{passwordError} </p>
                     {/* ===== confirm password ===== */}
-                    <lebel className='headings'>Confirm Password:</lebel><br/>
+                    <label className='headings'>Confirm Password:</label><br/>
                     <div className="confirmPassDiv">
                         {
                             confirmShowPassword?
